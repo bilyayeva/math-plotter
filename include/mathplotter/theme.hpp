@@ -1,0 +1,4 @@
+#ifndef MATHPLOTTER_THEME_HPP
+#define MATHPLOTTER_THEME_HPP
+
+#endif
