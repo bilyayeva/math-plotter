@@ -11,6 +11,7 @@ namespace mathplotter {
         float    m_zoomLevel;
     public:
         explicit CameraController(sf::View view);
+        void Apply(sf::RenderWindow& window) const;
     };
 
 } // namespace mathplotter
