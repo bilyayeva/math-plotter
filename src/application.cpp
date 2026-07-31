@@ -34,6 +34,7 @@ namespace mathplotter {
         while (m_window.isOpen()) {
             ProcessEvents();
             m_window.clear();
+            m_userInterface.Draw(m_window);
             m_window.display();
         }
     }
