@@ -30,4 +30,12 @@ namespace mathplotter {
         }
     }
 
+    void Application::Run() {
+        while (m_window.isOpen()) {
+            ProcessEvents();
+            m_window.clear();
+            m_window.display();
+        }
+    }
+
 } // namespace mathplotter
