@@ -15,7 +15,7 @@ namespace mathplotter {
           ),
           m_font("assets/fonts/dejavu/DejaVuSans.ttf"),
           m_interfaceView(m_window.getDefaultView()),
-          m_theme(ThemeType::Dark),
+          m_theme(ThemeType::Light),
           m_cameraController(m_interfaceView),
           m_gridRenderer(100.f),
           m_functionRenderers(),
@@ -33,7 +33,7 @@ namespace mathplotter {
     void Application::Run() {
         while (m_window.isOpen()) {
             ProcessEvents();
-            m_window.clear();
+            m_window.clear(m_theme.GetBackgroundColor());
             m_userInterface.Draw(m_window);
             m_window.display();
         }
