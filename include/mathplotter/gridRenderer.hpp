@@ -4,6 +4,7 @@
 #include <mathplotter/theme.hpp>
 
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/System/Vector2.hpp>
 
 namespace mathplotter {
 
@@ -11,6 +12,19 @@ namespace mathplotter {
     private:
         float m_majorGridStep;
         float m_minorGridStep;
+        struct VisibleBounds {
+            float left;
+            float right;
+            float top;
+            float bottom;
+        };
+
+        void DrawAxes(
+            sf::RenderWindow& window,
+            const Theme& theme,
+            const VisibleBounds& bounds,
+            const sf::Vector2f& worldOrigin
+        ) const;
     public:
         explicit GridRenderer(float majorGridStep);
         void Draw(sf::RenderWindow& window, const Theme& theme) const; 
