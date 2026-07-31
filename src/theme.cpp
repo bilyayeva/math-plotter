@@ -36,6 +36,14 @@ namespace mathplotter {
         return m_backgroundColor;
     }
 
+    sf::Color Theme::GetMajorGridColor() const {
+        return m_majorGridColor;
+    }
+
+    sf::Color Theme::GetMinorGridColor() const {
+        return m_minorGridColor;
+    }
+
     sf::Color Theme::GetTitleFillColor() const {
         return m_titleFillColor;
     }
