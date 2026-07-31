@@ -25,6 +25,8 @@ namespace mathplotter {
         GridRenderer                    m_gridRenderer;
         std::vector<FunctionRenderer>   m_functionRenderers;
         UserInterface                   m_userInterface;
+
+        void ProcessEvents();
     public:
         Application();
         void Run();
