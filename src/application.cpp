@@ -1,7 +1,10 @@
 #include <mathplotter/application.hpp>
 #include <mathplotter/theme.hpp>
 
+#include <SFML/Window/Event.hpp>
 #include <SFML/Window/VideoMode.hpp>
+
+#include <optional>
 
 namespace mathplotter {
 
@@ -17,6 +20,14 @@ namespace mathplotter {
           m_gridRenderer(100.f),
           m_functionRenderers(),
           m_userInterface(m_font) {
+    }
+
+    void Application::ProcessEvents() {
+        while (const std::optional event{m_window.pollEvent()}) {
+            if (event->is<sf::Event::Closed>()) {
+                m_window.close();
+            }
+        }
     }
 
 } // namespace mathplotter
