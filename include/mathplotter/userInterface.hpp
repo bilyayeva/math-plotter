@@ -1,6 +1,8 @@
 #ifndef MATHPLOTTER_USER_INTERFACE_HPP
 #define MATHPLOTTER_USER_INTERFACE_HPP
 
+#include <mathplotter/theme.hpp>
+
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Text.hpp>
@@ -11,7 +13,7 @@ namespace mathplotter {
     private:
         sf::Text m_title;
     public:
-        explicit UserInterface(const sf::Font& font);
+        UserInterface(const sf::Font& font, const Theme& theme);
         void Draw(sf::RenderWindow& window) const;
     };
 

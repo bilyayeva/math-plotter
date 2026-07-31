@@ -15,11 +15,11 @@ namespace mathplotter {
           ),
           m_font("assets/fonts/dejavu/DejaVuSans.ttf"),
           m_interfaceView(m_window.getDefaultView()),
-          m_theme(ThemeType::Light),
+          m_theme(ThemeType::Dark),
           m_cameraController(m_interfaceView),
           m_gridRenderer(100.f),
           m_functionRenderers(),
-          m_userInterface(m_font) {
+          m_userInterface(m_font, m_theme) {
     }
 
     void Application::ProcessEvents() {
