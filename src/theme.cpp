@@ -36,4 +36,8 @@ namespace mathplotter {
         return m_titleFillColor;
     }
 
+    sf::Color Theme::GetTitleOutlineColor() const {
+        return m_titleOutlineColor;
+    }
+
 } // namespace mathplotter
