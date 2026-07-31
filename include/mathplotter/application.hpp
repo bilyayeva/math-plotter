@@ -27,6 +27,7 @@ namespace mathplotter {
         UserInterface                   m_userInterface;
     public:
         Application();
+        void Run();
     };
 
 } // namespace mathplotter
