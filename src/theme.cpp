@@ -1,6 +1,8 @@
 #include <mathplotter/theme.hpp>
 #include <mathplotter/colorPalette.hpp>
 
+#include <SFML/Graphics/Color.hpp>
+
 #include <stdexcept>
 
 namespace mathplotter {
@@ -28,6 +30,10 @@ namespace mathplotter {
             default:
                 throw std::invalid_argument("Theme: Unsupported theme type.");
         }
+    }
+
+    sf::Color Theme::GetTitleFillColor() const {
+        return m_titleFillColor;
     }
 
 } // namespace mathplotter
