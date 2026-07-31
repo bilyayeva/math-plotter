@@ -32,6 +32,10 @@ namespace mathplotter {
         }
     }
 
+    sf::Color Theme::GetBackgroundColor() const {
+        return m_backgroundColor;
+    }
+
     sf::Color Theme::GetTitleFillColor() const {
         return m_titleFillColor;
     }
