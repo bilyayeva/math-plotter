@@ -18,6 +18,8 @@ namespace mathplotter {
         sf::Color m_minorGridColor;
         sf::Color m_axisColor;
         sf::Color m_axisLabelColor;
+        sf::Color m_titleFillColor;
+        sf::Color m_titleOutlineColor;
     public:
         explicit Theme(ThemeType type);
     };
