@@ -1,6 +1,7 @@
 #ifndef MATHPLOTTER_CAMERA_CONTROLLER_HPP
 #define MATHPLOTTER_CAMERA_CONTROLLER_HPP
 
+#include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/View.hpp>
 
 namespace mathplotter {
