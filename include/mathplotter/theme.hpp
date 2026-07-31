@@ -22,6 +22,7 @@ namespace mathplotter {
         sf::Color m_titleOutlineColor;
     public:
         explicit Theme(ThemeType type);
+        sf::Color GetTitleFillColor() const;
     };
 
 } // namespace mathplotter
