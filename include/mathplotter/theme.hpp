@@ -23,6 +23,7 @@ namespace mathplotter {
     public:
         explicit Theme(ThemeType type);
         sf::Color GetBackgroundColor() const;
+        sf::Color GetMajorGridColor() const;
         sf::Color GetTitleFillColor() const;
         sf::Color GetTitleOutlineColor() const;
     };
