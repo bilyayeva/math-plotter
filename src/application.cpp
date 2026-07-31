@@ -33,8 +33,17 @@ namespace mathplotter {
     void Application::Run() {
         while (m_window.isOpen()) {
             ProcessEvents();
+
             m_window.clear(m_theme.GetBackgroundColor());
+
+            // Render World
+            m_cameraController.Apply(m_window);
+            m_gridRenderer.Draw(m_window, m_theme);
+
+            // Render User Interface
+            m_window.setView(m_interfaceView);
             m_userInterface.Draw(m_window);
+
             m_window.display();
         }
     }
