@@ -44,6 +44,10 @@ namespace mathplotter {
         return m_minorGridColor;
     }
 
+    sf::Color Theme::GetAxisColor() const {
+        return m_axisColor;
+    }
+
     sf::Color Theme::GetTitleFillColor() const {
         return m_titleFillColor;
     }

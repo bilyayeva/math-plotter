@@ -25,6 +25,7 @@ namespace mathplotter {
         sf::Color GetBackgroundColor() const;
         sf::Color GetMajorGridColor() const;
         sf::Color GetMinorGridColor() const;
+        sf::Color GetAxisColor() const;
         sf::Color GetTitleFillColor() const;
         sf::Color GetTitleOutlineColor() const;
     };
