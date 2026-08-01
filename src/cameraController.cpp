@@ -2,11 +2,17 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
+#include <algorithm>
+
 namespace mathplotter {
 
     CameraController::CameraController(sf::View view)
         : m_view(view),
-          m_zoomLevel(1.0f) {
+          m_zoomLevel(1.0f),
+          m_zoomInFactor(0.95f),
+          m_zoomOutFactor(1.05f),
+          m_minZoomLevel(0.01f),
+          m_maxZoomLevel(100.f) {
         m_view.setCenter({0.f, 0.f});
     }
 
@@ -25,6 +31,21 @@ namespace mathplotter {
         m_view.setSize(newSize / m_zoomLevel);
         interfaceView.setSize(newSize);
         interfaceView.setCenter(newSize / 2.f);
+    }
+
+    void CameraController::HandleZoom(
+        const sf::Event::MouseWheelScrolled& mouseScrolled
+    ) {
+        float requestedZoom = m_zoomLevel;
+        if (mouseScrolled.delta > 0) {
+            requestedZoom /= m_zoomInFactor;
+        }
+        else if (mouseScrolled.delta < 0) {
+            requestedZoom /= m_zoomOutFactor;
+        }
+        requestedZoom = std::clamp(requestedZoom, m_minZoomLevel, m_maxZoomLevel);
+        m_view.zoom(m_zoomLevel / requestedZoom);
+        m_zoomLevel = requestedZoom;
     }
 
 } // namespace mathplotter

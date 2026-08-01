@@ -31,6 +31,10 @@ namespace mathplotter {
             if (const auto* windowResized{event->getIf<sf::Event::Resized>()}) {
                 m_cameraController.HandleResize(*windowResized, m_interfaceView);
             }
+            // auto deducts sf::Event::MouseWheelScrolled
+            if (const auto* mouseScrolled{event->getIf<sf::Event::MouseWheelScrolled>()}) {
+                m_cameraController.HandleZoom(*mouseScrolled);
+            }
         }
     }
 
