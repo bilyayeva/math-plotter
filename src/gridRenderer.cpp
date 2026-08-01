@@ -8,13 +8,19 @@
 #include <SFML/System/Vector2.hpp>
 
 #include <cmath>
+#include <cstddef>
 #include <stdexcept>
 
 namespace mathplotter {
 
     GridRenderer::GridRenderer(float majorGridStep)
         : m_majorGridStep(majorGridStep),
-          m_minorGridStep(majorGridStep / 4.f) {
+          m_minorGridStep(majorGridStep / 4.f),
+          m_maxMajorGridStep(m_majorGridStep * 2.f),
+          m_minMajorGridStep(m_majorGridStep / 2.f),
+          m_stepScale(1.f),
+          m_stepFactors(2.f, 2.5f, 2.f),
+          m_factorIndex(0) {
         if (majorGridStep <= 0.f) {
             throw std::invalid_argument("GridRenderer: Invalid value.");
         }
@@ -51,11 +57,18 @@ namespace mathplotter {
         const VisibleBounds& bounds,
         const float majorGridStep
     ) const {
+        const float currentMajorGridStep{
+            majorGridStep * m_stepScale
+        };
         float verticalLinePosition = 
-            std::ceil(bounds.left / majorGridStep) * majorGridStep;
+            std::ceil(
+                bounds.left / currentMajorGridStep
+            ) * currentMajorGridStep;
         
         float horizontalLinePosition =
-            std::ceil(bounds.top / majorGridStep) * majorGridStep;
+            std::ceil(
+                bounds.top / currentMajorGridStep
+            ) * currentMajorGridStep;
 
         sf::VertexArray gridLine(sf::PrimitiveType::Lines, 2);
 
@@ -65,10 +78,10 @@ namespace mathplotter {
         while (verticalLinePosition <= bounds.right) {
             gridLine[0].position = {verticalLinePosition, bounds.top};
             gridLine[1].position = {verticalLinePosition, bounds.bottom};
-            if (std::round(verticalLinePosition) != 0.F) {
+            if (std::round(verticalLinePosition) != 0.f) {
                 window.draw(gridLine);
             }
-            verticalLinePosition += majorGridStep;
+            verticalLinePosition += currentMajorGridStep;
         }
         while (horizontalLinePosition <= bounds.bottom) {
             gridLine[0].position = {bounds.left, horizontalLinePosition};
@@ -76,7 +89,7 @@ namespace mathplotter {
             if (std::round(horizontalLinePosition) != 0.f) {
                 window.draw(gridLine);
             }
-            horizontalLinePosition += majorGridStep;
+            horizontalLinePosition += currentMajorGridStep;
         }
     }
 
@@ -86,11 +99,18 @@ namespace mathplotter {
         const VisibleBounds& bounds,
         const float minorGridStep
     ) const {
+        const float currentMinorGridStep{
+            minorGridStep * m_stepScale
+        };
         float verticalLinePosition = 
-            std::ceil(bounds.left / minorGridStep) * minorGridStep;
+            std::ceil(
+                bounds.left / currentMinorGridStep
+            ) * currentMinorGridStep;
         
         float horizontalLinePosition =
-            std::ceil(bounds.top / minorGridStep) * minorGridStep;
+            std::ceil(
+                bounds.top / currentMinorGridStep
+            ) * currentMinorGridStep;
 
         sf::VertexArray gridLine(sf::PrimitiveType::Lines, 2);
 
@@ -100,10 +120,10 @@ namespace mathplotter {
         while (verticalLinePosition <= bounds.right) {
             gridLine[0].position = {verticalLinePosition, bounds.top};
             gridLine[1].position = {verticalLinePosition, bounds.bottom};
-            if (std::round(verticalLinePosition) != 0.F) {
+            if (std::round(verticalLinePosition) != 0.f) {
                 window.draw(gridLine);
             }
-            verticalLinePosition += minorGridStep;
+            verticalLinePosition += currentMinorGridStep;
         }
         while (horizontalLinePosition <= bounds.bottom) {
             gridLine[0].position = {bounds.left, horizontalLinePosition};
@@ -111,14 +131,30 @@ namespace mathplotter {
             if (std::round(horizontalLinePosition) != 0.f) {
                 window.draw(gridLine);
             }
-            horizontalLinePosition += minorGridStep;
+            horizontalLinePosition += currentMinorGridStep;
+        }
+    }
+
+    void GridRenderer::UpdateGridStep(const float zoomLevel) {
+        const float currentGridStep =
+            zoomLevel * m_majorGridStep * m_stepScale;
+        const std::size_t factorsSize{3};
+        if (currentGridStep > m_maxMajorGridStep) {
+            m_factorIndex =
+                (m_factorIndex + factorsSize - 1) % factorsSize;
+            m_stepScale /= m_stepFactors[m_factorIndex];
+        }
+        else if (currentGridStep < m_minMajorGridStep) {
+            m_stepScale *= m_stepFactors[m_factorIndex];
+            m_factorIndex = (m_factorIndex + 1) % factorsSize;
         }
     }
 
     void GridRenderer::Draw(
         sf::RenderWindow& window,
-        const Theme& theme
-    ) const {
+        const Theme& theme,
+        const float zoomLevel
+    ) {
         const sf::View     view         {window.getView()};
         const sf::Vector2f center       {view.getCenter()};
         const sf::Vector2f halfSize     {view.getSize() / 2.f};
@@ -131,6 +167,7 @@ namespace mathplotter {
             center.y + halfSize.y
         };
 
+        UpdateGridStep(zoomLevel);
         DrawMinorGrid(window, theme, bounds, m_minorGridStep);
         DrawMajorGrid(window, theme, bounds, m_majorGridStep);
         DrawAxes(window, theme, bounds, worldOrigin);
