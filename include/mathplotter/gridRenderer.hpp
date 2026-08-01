@@ -25,6 +25,12 @@ namespace mathplotter {
             const VisibleBounds& bounds,
             const sf::Vector2f& worldOrigin
         ) const;
+        void DrawMajorGrid(
+            sf::RenderWindow& window,
+            const Theme& theme,
+            const VisibleBounds& bounds,
+            const float majorGridStep
+        ) const;
     public:
         explicit GridRenderer(float majorGridStep);
         void Draw(sf::RenderWindow& window, const Theme& theme) const; 
