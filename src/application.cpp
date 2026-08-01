@@ -33,7 +33,7 @@ namespace mathplotter {
             }
             // auto deducts sf::Event::MouseWheelScrolled
             if (const auto* mouseScrolled{event->getIf<sf::Event::MouseWheelScrolled>()}) {
-                m_cameraController.HandleZoom(*mouseScrolled);
+                m_cameraController.HandleZoom(m_window, *mouseScrolled);
             }
             // auto deducts sf::Event::MouseButtonPressed
             if (const auto* mousePressed{event->getIf<sf::Event::MouseButtonPressed>()}) {

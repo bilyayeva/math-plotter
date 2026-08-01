@@ -24,6 +24,7 @@ namespace mathplotter {
             sf::View& interfaceView
         );
         void HandleZoom(
+            const sf::RenderWindow& window,
             const sf::Event::MouseWheelScrolled& mouseScrolled
         );
         void HandleDragStart(

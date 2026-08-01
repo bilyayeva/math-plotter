@@ -36,9 +36,13 @@ namespace mathplotter {
     }
 
     void CameraController::HandleZoom(
+        const sf::RenderWindow& window,
         const sf::Event::MouseWheelScrolled& mouseScrolled
     ) {
-        float requestedZoom = m_zoomLevel;
+        sf::Vector2f beforeZoomPosition{
+            window.mapPixelToCoords(mouseScrolled.position, m_view)
+        };
+        float requestedZoom{m_zoomLevel};
         if (mouseScrolled.delta > 0) {
             requestedZoom /= m_zoomInFactor;
         }
@@ -48,6 +52,10 @@ namespace mathplotter {
         requestedZoom = std::clamp(requestedZoom, m_minZoomLevel, m_maxZoomLevel);
         m_view.zoom(m_zoomLevel / requestedZoom);
         m_zoomLevel = requestedZoom;
+        sf::Vector2f afterZoomPosition{
+            window.mapPixelToCoords(mouseScrolled.position, m_view)
+        };
+        m_view.move(beforeZoomPosition - afterZoomPosition);
     }
 
     void CameraController::HandleDragStart(
