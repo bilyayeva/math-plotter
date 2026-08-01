@@ -13,6 +13,10 @@ namespace mathplotter {
     public:
         explicit CameraController(sf::View view);
         void Apply(sf::RenderWindow& window) const;
+        void HandleResize(
+            const sf::Event::Resized& resized,
+            sf::View& interfaceView
+        );
     };
 
 } // namespace mathplotter

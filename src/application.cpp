@@ -15,7 +15,7 @@ namespace mathplotter {
           ),
           m_font("assets/fonts/dejavu/DejaVuSans.ttf"),
           m_interfaceView(m_window.getDefaultView()),
-          m_theme(ThemeType::Light),
+          m_theme(ThemeType::Dark),
           m_cameraController(m_interfaceView),
           m_gridRenderer(100.f),
           m_functionRenderers(),
@@ -26,6 +26,10 @@ namespace mathplotter {
         while (const std::optional event{m_window.pollEvent()}) {
             if (event->is<sf::Event::Closed>()) {
                 m_window.close();
+            }
+            // auto deducts sf::Event::Resized
+            if (const auto* resized{event->getIf<sf::Event::Resized>()}) {
+                m_cameraController.HandleResize(*resized, m_interfaceView);
             }
         }
     }

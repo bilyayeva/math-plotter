@@ -14,4 +14,17 @@ namespace mathplotter {
         window.setView(m_view);
     }
 
+    void CameraController::HandleResize(
+        const sf::Event::Resized& resized,
+        sf::View& interfaceView
+    ) {
+        const sf::Vector2f newSize{
+            static_cast<float>(resized.size.x),
+            static_cast<float>(resized.size.y)
+        };
+        m_view.setSize(newSize / m_zoomLevel);
+        interfaceView.setSize(newSize);
+        interfaceView.setCenter(newSize / 2.f);
+    }
+
 } // namespace mathplotter
