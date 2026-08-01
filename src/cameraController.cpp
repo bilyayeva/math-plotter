@@ -12,7 +12,9 @@ namespace mathplotter {
           m_zoomInFactor(0.95f),
           m_zoomOutFactor(1.05f),
           m_minZoomLevel(0.01f),
-          m_maxZoomLevel(100.f) {
+          m_maxZoomLevel(100.f),
+          m_isDragging(false),
+          m_previousMousePosition({0.f, 0.f}) {
         m_view.setCenter({0.f, 0.f});
     }
 
@@ -46,6 +48,45 @@ namespace mathplotter {
         requestedZoom = std::clamp(requestedZoom, m_minZoomLevel, m_maxZoomLevel);
         m_view.zoom(m_zoomLevel / requestedZoom);
         m_zoomLevel = requestedZoom;
+    }
+
+    void CameraController::HandleDragStart(
+        const sf::RenderWindow& window,
+        const sf::Event::MouseButtonPressed& mousePressed
+    ) {
+        if (mousePressed.button == sf::Mouse::Button::Left) {
+            m_isDragging = true;
+            m_previousMousePosition = window.mapPixelToCoords(
+                                        mousePressed.position,
+                                        m_view
+                                    );
+        }
+    }
+
+    void CameraController::HandleDrag(
+        sf::RenderWindow& window,
+        const sf::Event::MouseMoved& mouseMoved
+    ) {
+        if (m_isDragging) {
+            const sf::Vector2f currentMousePosition{
+                window.mapPixelToCoords(mouseMoved.position, m_view)
+            };
+
+            m_view.move(
+                m_previousMousePosition - currentMousePosition
+            );
+
+            m_previousMousePosition =
+                window.mapPixelToCoords(mouseMoved.position, m_view);
+        }
+    }
+
+    void CameraController::HandleDragEnd(
+        const sf::Event::MouseButtonReleased& mouseReleased
+    ) {
+        if (mouseReleased.button == sf::Mouse::Button::Left) {
+            m_isDragging = false;
+        }
     }
 
 } // namespace mathplotter
