@@ -80,6 +80,41 @@ namespace mathplotter {
         }
     }
 
+    void GridRenderer::DrawMinorGrid(
+        sf::RenderWindow& window,
+        const Theme& theme,
+        const VisibleBounds& bounds,
+        const float minorGridStep
+    ) const {
+        float verticalLinePosition = 
+            std::ceil(bounds.left / minorGridStep) * minorGridStep;
+        
+        float horizontalLinePosition =
+            std::ceil(bounds.top / minorGridStep) * minorGridStep;
+
+        sf::VertexArray gridLine(sf::PrimitiveType::Lines, 2);
+
+        gridLine[0].color = theme.GetMinorGridColor();
+        gridLine[1].color = theme.GetMinorGridColor();
+
+        while (verticalLinePosition <= bounds.right) {
+            gridLine[0].position = {verticalLinePosition, bounds.top};
+            gridLine[1].position = {verticalLinePosition, bounds.bottom};
+            if (std::round(verticalLinePosition) != 0.F) {
+                window.draw(gridLine);
+            }
+            verticalLinePosition += minorGridStep;
+        }
+        while (horizontalLinePosition <= bounds.bottom) {
+            gridLine[0].position = {bounds.left, horizontalLinePosition};
+            gridLine[1].position = {bounds.right, horizontalLinePosition};
+            if (std::round(horizontalLinePosition) != 0.f) {
+                window.draw(gridLine);
+            }
+            horizontalLinePosition += minorGridStep;
+        }
+    }
+
     void GridRenderer::Draw(
         sf::RenderWindow& window,
         const Theme& theme
@@ -95,7 +130,8 @@ namespace mathplotter {
             center.y - halfSize.y,
             center.y + halfSize.y
         };
-        
+
+        DrawMinorGrid(window, theme, bounds, m_minorGridStep);
         DrawMajorGrid(window, theme, bounds, m_majorGridStep);
         DrawAxes(window, theme, bounds, worldOrigin);
     }
