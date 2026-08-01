@@ -37,6 +37,7 @@ namespace mathplotter {
         void HandleDragEnd(
             const sf::Event::MouseButtonReleased& mouseReleased
         );
+        float GetZoomLevel() const;
     };
 
 } // namespace mathplotter

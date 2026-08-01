@@ -89,4 +89,8 @@ namespace mathplotter {
         }
     }
 
+    float CameraController::GetZoomLevel() const {
+        return m_zoomLevel;
+    }
+
 } // namespace mathplotter
