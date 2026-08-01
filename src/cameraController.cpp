@@ -15,12 +15,12 @@ namespace mathplotter {
     }
 
     void CameraController::HandleResize(
-        const sf::Event::Resized& resized,
+        const sf::Event::Resized& windowResized,
         sf::View& interfaceView
     ) {
         const sf::Vector2f newSize{
-            static_cast<float>(resized.size.x),
-            static_cast<float>(resized.size.y)
+            static_cast<float>(windowResized.size.x),
+            static_cast<float>(windowResized.size.y)
         };
         m_view.setSize(newSize / m_zoomLevel);
         interfaceView.setSize(newSize);

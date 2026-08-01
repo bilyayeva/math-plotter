@@ -14,7 +14,7 @@ namespace mathplotter {
         explicit CameraController(sf::View view);
         void Apply(sf::RenderWindow& window) const;
         void HandleResize(
-            const sf::Event::Resized& resized,
+            const sf::Event::Resized& windowResized,
             sf::View& interfaceView
         );
     };

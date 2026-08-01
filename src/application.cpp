@@ -28,8 +28,8 @@ namespace mathplotter {
                 m_window.close();
             }
             // auto deducts sf::Event::Resized
-            if (const auto* resized{event->getIf<sf::Event::Resized>()}) {
-                m_cameraController.HandleResize(*resized, m_interfaceView);
+            if (const auto* windowResized{event->getIf<sf::Event::Resized>()}) {
+                m_cameraController.HandleResize(*windowResized, m_interfaceView);
             }
         }
     }
