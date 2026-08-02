@@ -48,6 +48,10 @@ namespace mathplotter {
         return m_axisColor;
     }
 
+    sf::Color Theme::GetAxisLabelColor() const {
+        return m_axisLabelColor;
+    }
+
     sf::Color Theme::GetTitleFillColor() const {
         return m_titleFillColor;
     }
