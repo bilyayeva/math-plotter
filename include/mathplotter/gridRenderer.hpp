@@ -3,7 +3,9 @@
 
 #include <mathplotter/theme.hpp>
 
+#include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Text.hpp>
 #include <SFML/System/Vector2.hpp>
 
 #include <cstddef>
@@ -47,11 +49,35 @@ namespace mathplotter {
         void UpdateGridStep(
             const float zoomLevel
         );
+        void DrawLabels(
+            sf::RenderWindow& window,
+            const sf::View& interfaceView,
+            const Theme& theme,
+            const sf::Font& font,
+            const VisibleBounds& bounds,
+            const float majorGridStep
+        ) const;
+        void DrawVerticalLabels(
+            sf::RenderWindow& window,
+            const sf::View& worldView,
+            const VisibleBounds& bounds,
+            sf::Text& label,
+            float currentMajorGridStep
+        ) const;
+        void DrawHorizontalLabels(
+            sf::RenderWindow& window,
+            const sf::View& worldView,
+            const VisibleBounds& bounds,
+            sf::Text& label,
+            float currentMajorGridStep
+        ) const;
     public:
         explicit GridRenderer(float majorGridStep);
         void Draw(
             sf::RenderWindow& window,
+            const sf::View& interfaceView,
             const Theme& theme,
+            const sf::Font& font,
             const float zoomLevel
         ); 
     };

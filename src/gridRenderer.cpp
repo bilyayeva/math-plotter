@@ -1,8 +1,10 @@
 #include <mathplotter/gridRenderer.hpp>
 #include <mathplotter/theme.hpp>
 
+#include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/Graphics/View.hpp>
 #include <SFML/System/Vector2.hpp>
@@ -10,6 +12,7 @@
 #include <cmath>
 #include <cstddef>
 #include <stdexcept>
+#include <string>
 
 namespace mathplotter {
 
@@ -150,9 +153,135 @@ namespace mathplotter {
         }
     }
 
+    void GridRenderer::DrawVerticalLabels(
+        sf::RenderWindow& window,
+        const sf::View& worldView,
+        const VisibleBounds& bounds,
+        sf::Text& label,
+        float currentMajorGridStep
+    ) const {
+        float verticalLabelPosition{
+            std::ceil(
+                bounds.left / currentMajorGridStep
+            ) * currentMajorGridStep
+        };
+
+        while (verticalLabelPosition <= bounds.right) {
+            const float labelValue{
+                verticalLabelPosition / m_majorGridStep
+            };
+
+            const sf::Vector2i pixelPosition{
+                window.mapCoordsToPixel(
+                    {verticalLabelPosition, 0.f},
+                    worldView
+                )
+            };
+
+            label.setString(
+                std::format(
+                    "{:g}",
+                    labelValue
+                )
+            );
+
+            label.setPosition({
+                static_cast<float>(pixelPosition.x),
+                static_cast<float>(pixelPosition.y)
+            });
+            window.draw(label);
+            
+            verticalLabelPosition += currentMajorGridStep;
+        }
+    }
+
+    void GridRenderer::DrawHorizontalLabels(
+        sf::RenderWindow& window,
+        const sf::View& worldView,
+        const VisibleBounds& bounds,
+        sf::Text& label,
+        float currentMajorGridStep
+    ) const {
+        float horizontalLabelPosition{
+            std::ceil(
+                bounds.top / currentMajorGridStep
+            ) * currentMajorGridStep
+        };
+
+        while (horizontalLabelPosition <= bounds.bottom) {
+            const float labelValue{
+                -horizontalLabelPosition / m_majorGridStep
+            };
+
+            const sf::Vector2i pixelPosition{
+                window.mapCoordsToPixel(
+                    {0.f, horizontalLabelPosition},
+                    worldView
+                )
+            };
+
+            if (std::round(labelValue) != 0.f) {
+                label.setString(
+                    std::format(
+                        "{:g}",
+                        labelValue
+                    )
+                );
+                label.setPosition({
+                    static_cast<float>(pixelPosition.x),
+                    static_cast<float>(pixelPosition.y)
+                });
+                window.draw(label);
+            }
+            
+            horizontalLabelPosition += currentMajorGridStep;
+        }
+    }
+
+    void GridRenderer::DrawLabels(
+        sf::RenderWindow& window,
+        const sf::View& interfaceView,
+        const Theme& theme,
+        const sf::Font& font,
+        const VisibleBounds& bounds,
+        const float majorGridStep
+    ) const {
+        const sf::View worldView{window.getView()};
+
+        const float currentMajorGridStep{
+            majorGridStep * m_stepScale
+        };
+
+        sf::Text label(font);
+        label.setFillColor(theme.GetAxisLabelColor());
+        label.setCharacterSize(15);
+
+        window.setView(interfaceView);   
+
+        DrawVerticalLabels(
+            window,
+            worldView,
+            bounds,
+            label,
+            currentMajorGridStep
+        );
+
+        DrawHorizontalLabels(
+            window,
+            worldView,
+            bounds,
+            label,
+            currentMajorGridStep
+        );
+
+        window.setView(worldView);
+    }
+
     void GridRenderer::Draw(
         sf::RenderWindow& window,
+        const sf::View& interfaceView,
         const Theme& theme,
+        const sf::Font& font,
         const float zoomLevel
     ) {
         const sf::View     view         {window.getView()};
@@ -171,6 +300,7 @@ namespace mathplotter {
         DrawMinorGrid(window, theme, bounds, m_minorGridStep);
         DrawMajorGrid(window, theme, bounds, m_majorGridStep);
         DrawAxes(window, theme, bounds, worldOrigin);
+        DrawLabels(window, interfaceView, theme, font, bounds, m_majorGridStep);
     }
 
 } // namespace mathplotter

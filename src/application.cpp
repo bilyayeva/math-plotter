@@ -59,7 +59,10 @@ namespace mathplotter {
             // Render World
             m_cameraController.Apply(m_window);
             m_gridRenderer.Draw(
-                m_window, m_theme,
+                m_window,
+                m_interfaceView,
+                m_theme,
+                m_font,
                 m_cameraController.GetZoomLevel()
             );
 
