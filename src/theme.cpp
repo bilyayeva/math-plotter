@@ -21,13 +21,23 @@ namespace mathplotter {
                 break;
             case ThemeType::Dark:
                 m_backgroundColor   = ColorPalette::kBlack;
-                m_majorGridColor    = ColorPalette::kRed;
-                m_minorGridColor    = ColorPalette::kGreen;
+                m_majorGridColor    = ColorPalette::kVeryDarkGrey;
+                m_minorGridColor    = ColorPalette::kAlmostBlack;
                 m_axisColor         = ColorPalette::kWhite;
                 m_axisLabelColor    = ColorPalette::kWhite;
                 m_titleFillColor    = ColorPalette::kBlack;
                 m_titleOutlineColor = ColorPalette::kWhite;
-                m_functionColor     = ColorPalette::kRed;
+                m_functionColor     = ColorPalette::kGreen;
+                break;
+            case ThemeType::Matrix:
+                m_backgroundColor   = ColorPalette::kBlack;
+                m_majorGridColor    = ColorPalette::kDarkGreen;
+                m_minorGridColor    = ColorPalette::kVeryDarkGreen;
+                m_axisColor         = ColorPalette::kMatrixGreen;
+                m_axisLabelColor    = ColorPalette::kMatrixGreen;
+                m_titleFillColor    = ColorPalette::kBlack;
+                m_titleOutlineColor = ColorPalette::kMatrixGreen;
+                m_functionColor     = ColorPalette::kGreen;
                 break;
             default:
                 throw std::invalid_argument("Theme: Unsupported theme type.");

@@ -16,7 +16,7 @@ namespace mathplotter {
           ),
           m_font("assets/fonts/dejavu/DejaVuSans.ttf"),
           m_interfaceView(m_window.getDefaultView()),
-          m_theme(ThemeType::Light),
+          m_theme(ThemeType::Matrix),
           m_cameraController(m_interfaceView),
           m_gridRenderer(100.f),
           m_functionRenderers(),

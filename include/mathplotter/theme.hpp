@@ -7,7 +7,8 @@ namespace mathplotter {
     
     enum class ThemeType {
         Light,
-        Dark
+        Dark,
+        Matrix
     };
 
     class Theme {
