@@ -20,6 +20,7 @@ namespace mathplotter {
         sf::Color m_axisLabelColor;
         sf::Color m_titleFillColor;
         sf::Color m_titleOutlineColor;
+        sf::Color m_functionColor;
     public:
         explicit Theme(ThemeType type);
         sf::Color GetBackgroundColor() const;
