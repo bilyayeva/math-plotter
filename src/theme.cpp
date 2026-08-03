@@ -11,8 +11,8 @@ namespace mathplotter {
         switch (type) {
             case ThemeType::Light:
                 m_backgroundColor   = ColorPalette::kWhite;
-                m_majorGridColor    = ColorPalette::kGreen;
-                m_minorGridColor    = ColorPalette::kBlue;
+                m_majorGridColor    = ColorPalette::kGrey;
+                m_minorGridColor    = ColorPalette::kLightGrey;
                 m_axisColor         = ColorPalette::kBlack;
                 m_axisLabelColor    = ColorPalette::kBlack;
                 m_titleFillColor    = ColorPalette::kWhite;
