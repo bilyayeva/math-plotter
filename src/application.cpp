@@ -1,5 +1,6 @@
 #include <mathplotter/application.hpp>
 #include <mathplotter/theme.hpp>
+#include <mathplotter/visibleBounds.hpp>
 
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/VideoMode.hpp>
@@ -54,6 +55,17 @@ namespace mathplotter {
         while (m_window.isOpen()) {
             ProcessEvents();
 
+            const sf::View     view         {m_window.getView()};
+            const sf::Vector2f center       {view.getCenter()};
+            const sf::Vector2f halfSize     {view.getSize() / 2.f};
+
+            const VisibleBounds bounds {
+                center.x - halfSize.x,
+                center.x + halfSize.x,
+                center.y - halfSize.y,
+                center.y + halfSize.y
+            };
+
             m_window.clear(m_theme.GetBackgroundColor());
 
             // Render World
@@ -63,7 +75,8 @@ namespace mathplotter {
                 m_interfaceView,
                 m_theme,
                 m_font,
-                m_cameraController.GetZoomLevel()
+                m_cameraController.GetZoomLevel(),
+                bounds
             );
 
             // Render User Interface

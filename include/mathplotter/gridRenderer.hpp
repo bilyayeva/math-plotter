@@ -2,6 +2,7 @@
 #define MATHPLOTTER_GRID_RENDERER_HPP
 
 #include <mathplotter/theme.hpp>
+#include <mathplotter/visibleBounds.hpp>
 
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -21,12 +22,6 @@ namespace mathplotter {
         float       m_stepScale;
         float       m_stepFactors[3];
         std::size_t m_factorIndex;
-        struct VisibleBounds {
-            float left;
-            float right;
-            float top;
-            float bottom;
-        };
 
         void DrawAxes(
             sf::RenderWindow& window,
@@ -78,7 +73,8 @@ namespace mathplotter {
             const sf::View& interfaceView,
             const Theme& theme,
             const sf::Font& font,
-            const float zoomLevel
+            const float zoomLevel,
+            const VisibleBounds& bounds
         ); 
     };
 

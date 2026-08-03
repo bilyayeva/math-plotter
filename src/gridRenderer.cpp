@@ -1,5 +1,6 @@
 #include <mathplotter/gridRenderer.hpp>
 #include <mathplotter/theme.hpp>
+#include <mathplotter/visibleBounds.hpp>
 
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
@@ -282,19 +283,10 @@ namespace mathplotter {
         const sf::View& interfaceView,
         const Theme& theme,
         const sf::Font& font,
-        const float zoomLevel
+        const float zoomLevel,
+        const VisibleBounds& bounds
     ) {
-        const sf::View     view         {window.getView()};
-        const sf::Vector2f center       {view.getCenter()};
-        const sf::Vector2f halfSize     {view.getSize() / 2.f};
         const sf::Vector2f worldOrigin  {0.f, 0.f};
-
-        const VisibleBounds bounds {
-            center.x - halfSize.x,
-            center.x + halfSize.x,
-            center.y - halfSize.y,
-            center.y + halfSize.y
-        };
 
         UpdateGridStep(zoomLevel);
         DrawMinorGrid(window, theme, bounds, m_minorGridStep);
