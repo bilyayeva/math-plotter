@@ -62,4 +62,8 @@ namespace mathplotter {
         return m_titleOutlineColor;
     }
 
+    sf::Color Theme::GetFunctionColor() const {
+        return m_functionColor;
+    }
+
 } // namespace mathplotter

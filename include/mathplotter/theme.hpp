@@ -30,6 +30,7 @@ namespace mathplotter {
         sf::Color GetAxisLabelColor() const;
         sf::Color GetTitleFillColor() const;
         sf::Color GetTitleOutlineColor() const;
+        sf::Color GetFunctionColor() const;
     };
 
 } // namespace mathplotter
