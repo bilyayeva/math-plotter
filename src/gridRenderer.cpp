@@ -295,4 +295,8 @@ namespace mathplotter {
         DrawLabels(window, interfaceView, theme, font, bounds, m_majorGridStep);
     }
 
+    float GridRenderer::GetMajorGridStep() const {
+        return m_majorGridStep;
+    }
+
 } // namespace mathplotter

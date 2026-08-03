@@ -75,7 +75,8 @@ namespace mathplotter {
             const sf::Font& font,
             const float zoomLevel,
             const VisibleBounds& bounds
-        ); 
+        );
+        float GetMajorGridStep() const;
     };
 
 } // namespace mathplotter
