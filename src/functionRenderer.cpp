@@ -1,11 +1,57 @@
 #include <mathplotter/functionRenderer.hpp>
+#include <mathplotter/visibleBounds.hpp>
+
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
 
 #include <string>
 
 namespace mathplotter {
 
-    FunctionRenderer::FunctionRenderer(std::string expression)
-        : m_expression(expression) {
+    FunctionRenderer::FunctionRenderer(
+        const std::string& expression,
+        const sf::Color& color)
+        : m_expression(expression),
+          m_x(0.0),
+          m_functionColor(color) {
+        m_parser.DefineVar("x", &m_x);
+        m_parser.SetExpr(m_expression);
+    }
+
+    void FunctionRenderer::Draw(
+        sf::RenderWindow& window,
+        const VisibleBounds& bounds,
+        float majorGridStep
+    ) {
+        const float functionStep{2.f};
+
+        sf::VertexArray function(sf::PrimitiveType::LineStrip);
+
+        for (
+            float worldX{bounds.left - functionStep};
+            worldX <= bounds.right + functionStep;
+            worldX += functionStep) {
+            m_x = static_cast<double>(worldX) / static_cast<double>(majorGridStep);
+            const double y     {m_parser.Eval()};
+            const double worldY {-y * static_cast<double>(majorGridStep)};
+            if (
+                !std::isfinite(worldY) ||
+                worldY < bounds.top ||
+                worldY > bounds.bottom
+            ) {
+                continue;
+            }
+            function.append({
+                {
+                    worldX,
+                    static_cast<float>(worldY)
+                },
+                m_functionColor
+            });
+        }
+
+        window.draw(function);
     }
 
 } // namespace mathplotter

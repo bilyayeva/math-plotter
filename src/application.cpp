@@ -52,8 +52,11 @@ namespace mathplotter {
     }
 
     void Application::Run() {
+        m_functionRenderers.emplace_back("x^3", m_theme.GetFunctionColor());
         while (m_window.isOpen()) {
             ProcessEvents();
+
+            m_cameraController.Apply(m_window);
 
             const sf::View     view         {m_window.getView()};
             const sf::Vector2f center       {view.getCenter()};
@@ -69,7 +72,6 @@ namespace mathplotter {
             m_window.clear(m_theme.GetBackgroundColor());
 
             // Render World
-            m_cameraController.Apply(m_window);
             m_gridRenderer.Draw(
                 m_window,
                 m_interfaceView,
@@ -78,6 +80,11 @@ namespace mathplotter {
                 m_cameraController.GetZoomLevel(),
                 bounds
             );
+
+            // Render Function
+            for (auto& function: m_functionRenderers) {
+                function.Draw(m_window, bounds, m_gridRenderer.GetMajorGridStep());
+            }
 
             // Render User Interface
             m_window.setView(m_interfaceView);
