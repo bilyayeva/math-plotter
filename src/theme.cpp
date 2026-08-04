@@ -27,7 +27,7 @@ namespace mathplotter {
                 m_axisLabelColor    = ColorPalette::kWhite;
                 m_titleFillColor    = ColorPalette::kBlack;
                 m_titleOutlineColor = ColorPalette::kWhite;
-                m_functionColor     = ColorPalette::kGreen;
+                m_functionColor     = ColorPalette::kRed;
                 break;
             case ThemeType::Matrix:
                 m_backgroundColor   = ColorPalette::kBlack;
@@ -37,7 +37,7 @@ namespace mathplotter {
                 m_axisLabelColor    = ColorPalette::kMatrixGreen;
                 m_titleFillColor    = ColorPalette::kBlack;
                 m_titleOutlineColor = ColorPalette::kMatrixGreen;
-                m_functionColor     = ColorPalette::kGreen;
+                m_functionColor     = ColorPalette::kRed;
                 break;
             default:
                 throw std::invalid_argument("Theme: Unsupported theme type.");
