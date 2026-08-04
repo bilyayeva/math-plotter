@@ -161,16 +161,35 @@ namespace mathplotter {
         sf::Text& label,
         float currentMajorGridStep
     ) const {
-        float verticalLabelPosition{
-            std::ceil(
-                bounds.left / currentMajorGridStep
-            ) * currentMajorGridStep
+        int labelIndex{
+            static_cast<int>(
+                std::ceil(
+                    bounds.left / currentMajorGridStep
+                )
+            )
         };
 
-        while (verticalLabelPosition <= bounds.right) {
-            const float labelValue{
+        while (true) {
+            const float verticalLabelPosition{
+                static_cast<float>(labelIndex) *
+                currentMajorGridStep
+            };
+
+            if (verticalLabelPosition > bounds.right) {
+                break;
+            }
+
+            float labelValue{
                 verticalLabelPosition / m_majorGridStep
             };
+
+            const float roundedValue{
+                std::round(labelValue)
+            };
+
+            if (std::abs(labelValue - roundedValue) < 0.001f) {
+                labelValue = roundedValue;
+            }
 
             const sf::Vector2i pixelPosition{
                 window.mapCoordsToPixel(
@@ -180,19 +199,17 @@ namespace mathplotter {
             };
 
             label.setString(
-                std::format(
-                    "{:g}",
-                    labelValue
-                )
+                std::format("{:g}", labelValue)
             );
 
             label.setPosition({
                 static_cast<float>(pixelPosition.x),
                 static_cast<float>(pixelPosition.y)
             });
+
             window.draw(label);
-            
-            verticalLabelPosition += currentMajorGridStep;
+
+            ++labelIndex;
         }
     }
 
@@ -203,16 +220,35 @@ namespace mathplotter {
         sf::Text& label,
         float currentMajorGridStep
     ) const {
-        float horizontalLabelPosition{
-            std::ceil(
-                bounds.top / currentMajorGridStep
-            ) * currentMajorGridStep
+        int labelIndex{
+            static_cast<int>(
+                std::ceil(
+                    bounds.top / currentMajorGridStep
+                )
+            )
         };
 
-        while (horizontalLabelPosition <= bounds.bottom) {
-            const float labelValue{
+        while (true) {
+            const float horizontalLabelPosition{
+                static_cast<float>(labelIndex) *
+                currentMajorGridStep
+            };
+
+            if (horizontalLabelPosition > bounds.bottom) {
+                break;
+            }
+
+            float labelValue{
                 -horizontalLabelPosition / m_majorGridStep
             };
+
+            const float roundedValue{
+                std::round(labelValue)
+            };
+
+            if (std::abs(labelValue - roundedValue) < 0.001f) {
+                labelValue = roundedValue;
+            }
 
             const sf::Vector2i pixelPosition{
                 window.mapCoordsToPixel(
@@ -221,21 +257,20 @@ namespace mathplotter {
                 )
             };
 
-            if (std::round(labelValue) != 0.f) {
+            if (std::abs(labelValue) >= 0.001f) {
                 label.setString(
-                    std::format(
-                        "{:g}",
-                        labelValue
-                    )
+                    std::format("{:g}", labelValue)
                 );
+
                 label.setPosition({
                     static_cast<float>(pixelPosition.x),
                     static_cast<float>(pixelPosition.y)
                 });
+
                 window.draw(label);
             }
-            
-            horizontalLabelPosition += currentMajorGridStep;
+
+            ++labelIndex;
         }
     }
 
