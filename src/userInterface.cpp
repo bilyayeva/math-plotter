@@ -36,13 +36,13 @@ namespace mathplotter {
     void UserInterface::SelectTheme([[maybe_unused]]Theme& theme) {
         const ImGuiViewport* viewport{ImGui::GetMainViewport()};
         const ImVec2 position{
-            viewport->WorkPos.x + viewport->WorkSize.x - 5.f,
-            viewport->WorkPos.y + viewport->WorkSize.y - 5.f
+            viewport->WorkPos.x + viewport->WorkSize.x - 10.f,
+            viewport->WorkPos.y + 10.f
         };
         ImGui::SetNextWindowPos(
             position,
             ImGuiCond_Always,
-            {1.f, 1.f}
+            {1.f, 0.f}
         );
         const float comboWidth{
             ImGui::CalcTextSize("Light").x +
@@ -57,7 +57,12 @@ namespace mathplotter {
             ImGuiWindowFlags_AlwaysAutoResize
         };
         ImGuiStyle& style{ImGui::GetStyle()};
+        ImGui::PushStyleVar(
+            ImGuiStyleVar_WindowPadding,
+            {0.f, 0.f}
+        );
         ImGui::Begin("Theme", nullptr, windowFlags);
+        ImGui::PopStyleVar();
 
         const char* themes[]{"Light", "Dark", "Matrix"};
 
@@ -88,9 +93,9 @@ namespace mathplotter {
         style.Colors[ImGuiCol_ButtonActive]     = active;
         style.Colors[ImGuiCol_HeaderHovered]    = hovered;
         style.Colors[ImGuiCol_HeaderActive]     = active;
-        style.Colors[ImGuiCol_TitleBg]          = hovered;
-        style.Colors[ImGuiCol_TitleBgActive]    = active;
-        style.Colors[ImGuiCol_TitleBgCollapsed] = hovered;
+        style.Colors[ImGuiCol_TitleBg]          = background;
+        style.Colors[ImGuiCol_TitleBgActive]    = background;
+        style.Colors[ImGuiCol_TitleBgCollapsed] = background;
         style.Colors[ImGuiCol_Header]           = active;
         style.Colors[ImGuiCol_HeaderHovered]    = hovered;
         style.Colors[ImGuiCol_HeaderActive]     = active;
