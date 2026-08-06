@@ -97,8 +97,6 @@ namespace mathplotter {
         style.Colors[ImGuiCol_TitleBgActive]    = background;
         style.Colors[ImGuiCol_TitleBgCollapsed] = background;
         style.Colors[ImGuiCol_Header]           = active;
-        style.Colors[ImGuiCol_HeaderHovered]    = hovered;
-        style.Colors[ImGuiCol_HeaderActive]     = active;
         if (
             ImGui::Combo(
             "##Theme",
