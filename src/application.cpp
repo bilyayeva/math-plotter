@@ -144,22 +144,30 @@ namespace mathplotter {
                     )
                 };
 
-                if (renderer->IsValid()) {
-                    m_functionRenderers[submission->rowIndex] =
-                        std::move(renderer);
-
-                    m_userInterface.SetFunctionError(
-                        submission->rowIndex,
-                        false
-                    );
+                if (submission->shouldRemove) {
+                    if (submission->rowIndex < m_functionRenderers.size()) {
+                        m_functionRenderers[submission->rowIndex].reset();
+                    }
                 } else {
-                    m_functionRenderers[submission->rowIndex].reset();
+                    if (renderer->IsValid()) {
+                        m_functionRenderers[submission->rowIndex] =
+                            std::move(renderer);
 
-                    m_userInterface.SetFunctionError(
-                        submission->rowIndex,
-                        true
-                    );
+                        m_userInterface.SetFunctionError(
+                            submission->rowIndex,
+                            false
+                        );
+                    } else {
+                        m_functionRenderers[submission->rowIndex].reset();
+
+                        m_userInterface.SetFunctionError(
+                            submission->rowIndex,
+                            true
+                        );
+                    }
                 }
+
+                
             }
 
             // Render User Interface

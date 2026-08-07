@@ -487,8 +487,19 @@ namespace mathplotter {
                     )
                 };
 
-                if (ImGui::IsItemEdited()) {
+                if (
+                    ImGui::IsItemEdited() &&
+                    m_functionRows[i].expression.empty()
+                ) {
                     m_functionRows[i].isSubmitted = false;
+                    m_functionRows[i].hasError = false;
+
+                    submission = FunctionSubmission{
+                        i,
+                        "",
+                        ToSfmlColor(m_functionRows[i].color),
+                        true
+                    };
                 }
 
                 if (

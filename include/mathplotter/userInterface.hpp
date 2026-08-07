@@ -20,6 +20,7 @@ namespace mathplotter {
         std::size_t rowIndex;
         std::string expression;
         sf::Color color;
+        bool shouldRemove{false};
     };
 
     class UserInterface {
