@@ -52,11 +52,7 @@ namespace mathplotter {
             m_x = static_cast<double>(worldX) / static_cast<double>(majorGridStep);
             const double y     {m_parser.Eval()};
             const double worldY {-y * static_cast<double>(majorGridStep)};
-            if (
-                !std::isfinite(worldY) ||
-                worldY < bounds.top ||
-                worldY > bounds.bottom
-            ) {
+            if (!std::isfinite(worldY)) {
                 continue;
             }
             function.append({
