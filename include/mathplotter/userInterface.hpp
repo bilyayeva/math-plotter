@@ -21,6 +21,7 @@ namespace mathplotter {
         std::string expression;
         sf::Color color;
         bool shouldRemove{false};
+        bool shouldErase{false};
     };
 
     class UserInterface {

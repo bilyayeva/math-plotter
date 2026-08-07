@@ -342,6 +342,8 @@ namespace mathplotter {
                 ImGui::GetCursorScreenPos()
             };
 
+            std::optional<std::size_t> rowToRemove;
+
             for (std::size_t i{0}; i < m_functionRows.size(); ++i) {
                 ImGui::PushID(static_cast<int>(i));
 
@@ -488,6 +490,15 @@ namespace mathplotter {
                 };
 
                 if (
+                    ImGui::IsItemActive() &&
+                    m_functionRows[i].expression.empty() &&
+                    ImGui::IsKeyPressed(ImGuiKey_Backspace) &&
+                    m_functionRows.size() > 1
+                ) {
+                    rowToRemove = i;
+                }
+
+                if (
                     ImGui::IsItemEdited() &&
                     m_functionRows[i].expression.empty()
                 ) {
@@ -521,6 +532,21 @@ namespace mathplotter {
 
                 ImGui::PopID();
             }
+            
+            if (rowToRemove.has_value()) {
+                submission = FunctionSubmission{
+                    *rowToRemove,
+                    "",
+                    {},
+                    false,
+                    true
+                };
+
+                m_functionRows.erase(
+                    m_functionRows.begin() + *rowToRemove
+                );
+            }
+
             ImGui::PopStyleVar();
             ImGui::PopStyleColor(3);
 

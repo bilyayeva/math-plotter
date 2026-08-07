@@ -144,7 +144,16 @@ namespace mathplotter {
                     )
                 };
 
-                if (submission->shouldRemove) {
+
+                if (submission->shouldErase) {
+                    if (submission->rowIndex < m_functionRenderers.size()) {
+                        m_functionRenderers.erase(
+                            m_functionRenderers.begin() +
+                            submission->rowIndex
+                        );
+                    }
+                }
+                else if (submission->shouldRemove) {
                     if (submission->rowIndex < m_functionRenderers.size()) {
                         m_functionRenderers[submission->rowIndex].reset();
                     }
