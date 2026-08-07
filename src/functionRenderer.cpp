@@ -19,6 +19,23 @@ namespace mathplotter {
         m_parser.SetExpr(m_expression);
     }
 
+    bool FunctionRenderer::IsValid() const {
+        try {
+            const auto& variables{m_parser.GetUsedVar()};
+
+            for (const auto& variable : variables) {
+                if (variable.first != "x") {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        catch (const mu::Parser::exception_type&) {
+            return false;
+        }
+    }
+
     void FunctionRenderer::Draw(
         sf::RenderWindow& window,
         const VisibleBounds& bounds,

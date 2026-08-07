@@ -28,6 +28,7 @@ namespace mathplotter {
             std::string expression;
             ImVec4 color{1.f, 0.f, 0.f, 1.f};
             bool isSubmitted{false};
+            bool hasError{false};
         };
 
         sf::Text m_title;
@@ -46,6 +47,10 @@ namespace mathplotter {
         std::optional<FunctionSubmission> Draw(
             sf::RenderWindow& window,
             Theme& theme
+        );
+        void SetFunctionError(
+            std::size_t rowIndex,
+            bool hasError
         );
     };
 

@@ -138,6 +138,15 @@ namespace mathplotter {
         ImGui::End();
     }
 
+    void UserInterface::SetFunctionError(
+        std::size_t rowIndex,
+        bool hasError
+    ) {
+        if (rowIndex < m_functionRows.size()) {
+            m_functionRows[rowIndex].hasError = hasError;
+        }
+    }
+
     std::optional<FunctionSubmission> UserInterface::DrawFunctionPanel(
         const Theme& theme
     ) {
@@ -364,8 +373,7 @@ namespace mathplotter {
 
                 ImGui::TableSetColumnIndex(1);
 
-                if (m_functionRows[i].isSubmitted) {
-
+                if (m_functionRows[i].isSubmitted) {        
                     constexpr float colorSize{16.f};
 
                     const float horizontalOffset{
@@ -386,58 +394,77 @@ namespace mathplotter {
                         1.f
                     );
 
-                    if (
-                        ImGui::ColorButton(
-                            "##FunctionColor",
-                            m_functionRows[i].color,
-                            ImGuiColorEditFlags_NoTooltip,
-                            {colorSize, colorSize}
-                        )
-                    ) {
-                        ImGui::OpenPopup("FunctionColorPicker");
-                    }
-
-                    const ImVec2 colorButtonMax{ImGui::GetItemRectMax()};
-                    const ImVec2 colorButtonMin{ImGui::GetItemRectMin()};
-
-                    ImGui::SetNextWindowPos(
-                        {
-                            colorButtonMax.x + 5.f,
-                            colorButtonMin.y
-                        },
-                        ImGuiCond_Appearing
-                    );
-
-                    if (
-                        ImGui::BeginPopup(
-                            "FunctionColorPicker",
-                            ImGuiWindowFlags_NoMove
-                        )
-                    ) {
-                        constexpr ImGuiColorEditFlags colorPickerFlags{
-                            ImGuiColorEditFlags_NoAlpha |
-                            ImGuiColorEditFlags_NoInputs |
-                            ImGuiColorEditFlags_NoSidePreview |
-                            ImGuiColorEditFlags_NoSmallPreview
+                    if (m_functionRows[i].hasError) {
+                        const ImVec2 errorSize{
+                            ImGui::CalcTextSize("!")
                         };
 
-                        ImGui::SetNextItemWidth(160.f);
+                        ImGui::SetCursorPosX(
+                            ImGui::GetCursorPosX() +
+                            (colorSize - errorSize.x) / 2.f
+                        );
+
+                        ImGui::SetCursorPosY(
+                            ImGui::GetCursorPosY() +
+                            (colorSize - errorSize.y) / 2.f
+                        );
+
+                        ImGui::TextUnformatted("!");
+                    } else {
 
                         if (
-                            ImGui::ColorPicker4(
-                                "##ColorPicker",
-                                &m_functionRows[i].color.x,
-                                colorPickerFlags
+                            ImGui::ColorButton(
+                                "##FunctionColor",
+                                m_functionRows[i].color,
+                                ImGuiColorEditFlags_NoTooltip,
+                                {colorSize, colorSize}
                             )
                         ) {
-                            submission = FunctionSubmission{
-                                i,
-                                m_functionRows[i].expression,
-                                ToSfmlColor(m_functionRows[i].color)
-                            };
+                            ImGui::OpenPopup("FunctionColorPicker");
                         }
 
-                        ImGui::EndPopup();
+                        const ImVec2 colorButtonMax{ImGui::GetItemRectMax()};
+                        const ImVec2 colorButtonMin{ImGui::GetItemRectMin()};
+
+                        ImGui::SetNextWindowPos(
+                            {
+                                colorButtonMax.x + 5.f,
+                                colorButtonMin.y
+                            },
+                            ImGuiCond_Appearing
+                        );
+
+                        if (
+                            ImGui::BeginPopup(
+                                "FunctionColorPicker",
+                                ImGuiWindowFlags_NoMove
+                            )
+                        ) {
+                            constexpr ImGuiColorEditFlags colorPickerFlags{
+                                ImGuiColorEditFlags_NoAlpha |
+                                ImGuiColorEditFlags_NoInputs |
+                                ImGuiColorEditFlags_NoSidePreview |
+                                ImGuiColorEditFlags_NoSmallPreview
+                            };
+
+                            ImGui::SetNextItemWidth(160.f);
+
+                            if (
+                                ImGui::ColorPicker4(
+                                    "##ColorPicker",
+                                    &m_functionRows[i].color.x,
+                                    colorPickerFlags
+                                )
+                            ) {
+                                submission = FunctionSubmission{
+                                    i,
+                                    m_functionRows[i].expression,
+                                    ToSfmlColor(m_functionRows[i].color)
+                                };
+                            }
+
+                            ImGui::EndPopup();
+                        }
                     }
 
                     ImGui::PopStyleVar();

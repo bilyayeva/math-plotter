@@ -9,6 +9,7 @@
 #include <imgui.h>
 
 #include <optional>
+#include <utility>
 #include <stdexcept>
 
 namespace mathplotter {
@@ -136,11 +137,29 @@ namespace mathplotter {
                     );
                 }
 
-                m_functionRenderers[submission->rowIndex] =
+                auto renderer{
                     std::make_unique<FunctionRenderer>(
                         submission->expression,
                         submission->color
+                    )
+                };
+
+                if (renderer->IsValid()) {
+                    m_functionRenderers[submission->rowIndex] =
+                        std::move(renderer);
+
+                    m_userInterface.SetFunctionError(
+                        submission->rowIndex,
+                        false
                     );
+                } else {
+                    m_functionRenderers[submission->rowIndex].reset();
+
+                    m_userInterface.SetFunctionError(
+                        submission->rowIndex,
+                        true
+                    );
+                }
             }
 
             // Render User Interface

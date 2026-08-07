@@ -27,6 +27,7 @@ namespace mathplotter {
             const VisibleBounds& bounds,
             float majorGridStep
         );
+        bool IsValid() const;
     };
 
 } // namespace mathplotter
