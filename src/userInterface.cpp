@@ -126,7 +126,31 @@ namespace mathplotter {
         ImGui::End();
     }
 
-    void UserInterface::DrawFunctionPanel() {
+    void UserInterface::DrawFunctionPanel(const Theme& theme) {
+        const ImVec4 background{
+            ToImGuiColor(theme.GetBackgroundColor())
+        };
+
+        const ImVec4 foreground{
+            ToImGuiColor(theme.GetAxisLabelColor())
+        };
+
+        ImVec4 hovered{foreground};
+        hovered.w = 0.15f;
+
+        ImVec4 active{foreground};
+        active.w = 0.25f;
+
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, background);
+        ImGui::PushStyleColor(ImGuiCol_PopupBg, background);
+        ImGui::PushStyleColor(ImGuiCol_Text, foreground);
+        ImGui::PushStyleColor(ImGuiCol_Border, foreground);
+        ImGui::PushStyleColor(ImGuiCol_TableBorderStrong, foreground);
+        ImGui::PushStyleColor(ImGuiCol_TableBorderLight, foreground);
+        ImGui::PushStyleColor(ImGuiCol_Button, background);
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, hovered);
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, active);
+
         constexpr ImGuiWindowFlags windowFlags{
             ImGuiWindowFlags_NoMove |
             ImGuiWindowFlags_NoResize |
@@ -346,11 +370,6 @@ namespace mathplotter {
                         1.f
                     );
 
-                    ImGui::PushStyleColor(
-                        ImGuiCol_Border,
-                        ImVec4(0.f, 0.f, 0.f, 1.f)
-                    );
-
                     if (
                         ImGui::ColorButton(
                             "##FunctionColor",
@@ -397,7 +416,6 @@ namespace mathplotter {
                         ImGui::EndPopup();
                     }
 
-                    ImGui::PopStyleColor();
                     ImGui::PopStyleVar();
                 }
 
@@ -457,10 +475,11 @@ namespace mathplotter {
         }
 
         ImGui::End();
+        ImGui::PopStyleColor(9);
     }
 
     void UserInterface::Draw([[maybe_unused]]sf::RenderWindow& window, Theme& theme) {
-        DrawFunctionPanel();
+        DrawFunctionPanel(theme);
         SelectTheme(theme);
         //window.draw(m_title);
     }

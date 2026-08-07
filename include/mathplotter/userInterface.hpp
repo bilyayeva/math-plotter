@@ -25,7 +25,7 @@ namespace mathplotter {
         int m_selectedThemeIndex{0};
         std::vector<FunctionRow> m_functionRows;
 
-        void DrawFunctionPanel();
+        void DrawFunctionPanel(const Theme& theme);
         void ConfigureTitle(const Theme& theme);
         void SelectTheme(Theme& theme);
         ImVec4 ToImGuiColor(const sf::Color& color);
