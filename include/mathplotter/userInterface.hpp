@@ -9,13 +9,23 @@
 #include <SFML/Graphics/Text.hpp>
 #include <imgui.h>
 
+#include <string>
+#include <vector>
+
 namespace mathplotter {
 
     class UserInterface {
     private:
+        struct FunctionRow {
+            std::string expression;
+            ImVec4 color{1.f, 0.f, 0.f, 1.f};
+        };
+
         sf::Text m_title;
         int m_selectedThemeIndex{0};
+        std::vector<FunctionRow> m_functionRows;
 
+        void DrawFunctionPanel();
         void ConfigureTitle(const Theme& theme);
         void SelectTheme(Theme& theme);
         ImVec4 ToImGuiColor(const sf::Color& color);

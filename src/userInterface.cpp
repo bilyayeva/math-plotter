@@ -5,12 +5,16 @@
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <imgui.h>
+#include <misc/cpp/imgui_stdlib.h>
+
+#include <string>
 
 namespace mathplotter {
 
     UserInterface::UserInterface(const sf::Font& font, const Theme& theme)
         : m_title(font, "Math Plotter++"),
-          m_selectedThemeIndex(0) {
+          m_selectedThemeIndex(0),
+          m_functionRows(1) {
         ConfigureTitle(theme);
     }
 
@@ -122,9 +126,343 @@ namespace mathplotter {
         ImGui::End();
     }
 
-    void UserInterface::Draw(sf::RenderWindow& window, Theme& theme) {
+    void UserInterface::DrawFunctionPanel() {
+        constexpr ImGuiWindowFlags windowFlags{
+            ImGuiWindowFlags_NoMove |
+            ImGuiWindowFlags_NoResize |
+            ImGuiWindowFlags_NoCollapse |
+            ImGuiWindowFlags_NoTitleBar |
+            ImGuiWindowFlags_AlwaysAutoResize
+        };
+
+        ImGui::SetNextWindowPos(
+            {10.f, 10.f},
+            ImGuiCond_Always
+        );
+
+        const ImGuiViewport* viewport{ImGui::GetMainViewport()};
+
+        const float maxHeight{
+            viewport->WorkSize.y - 20.f
+        };
+
+        ImGui::SetNextWindowSizeConstraints(
+            {230.f, 0.f},
+            {230.f, maxHeight}
+        );
+
+        ImGui::PushStyleVar(
+            ImGuiStyleVar_WindowPadding,
+            {0.f, 0.f}
+        );
+
+        ImGui::Begin("Functions", nullptr, windowFlags);
+
+        ImGui::PopStyleVar();
+
+        constexpr std::size_t maxFunctions{15};
+
+        constexpr float headerHeight{40.f};
+        constexpr float numberColumnWidth{30.f};
+
+        constexpr ImGuiTableFlags headerFlags{
+            ImGuiTableFlags_BordersOuterV |
+            ImGuiTableFlags_BordersInnerV |
+            ImGuiTableFlags_NoSavedSettings
+        };
+
+        ImGui::PushStyleVar(
+            ImGuiStyleVar_CellPadding,
+            {0.f, 0.f}
+        );
+
+        ImGui::PushStyleVar(
+            ImGuiStyleVar_ItemSpacing,
+            {
+                ImGui::GetStyle().ItemSpacing.x,
+                0.f
+            }
+        );
+
+        if (ImGui::BeginTable("FunctionHeader", 2, headerFlags)) {
+            ImGui::TableSetupColumn(
+                "Add",
+                ImGuiTableColumnFlags_WidthFixed,
+                numberColumnWidth
+            );
+
+            ImGui::TableSetupColumn(
+                "Title",
+                ImGuiTableColumnFlags_WidthStretch
+            );
+
+            ImGui::TableNextRow(
+                ImGuiTableRowFlags_None,
+                headerHeight
+            );
+
+            ImGui::TableSetColumnIndex(0);
+
+            ImGui::PushStyleVar(
+                ImGuiStyleVar_FrameBorderSize,
+                0.f
+            );
+
+            if (
+                ImGui::Button(
+                    "+",
+                    {
+                        ImGui::GetContentRegionAvail().x,
+                        headerHeight
+                    }
+                ) &&
+                m_functionRows.size() < maxFunctions
+            ) {
+                m_functionRows.emplace_back();
+            }
+
+            ImGui::PopStyleVar();
+
+            ImGui::TableSetColumnIndex(1);
+
+            const ImVec2 titleSize{
+                ImGui::CalcTextSize("Function")
+            };
+
+            ImGui::SetCursorPosX(
+                ImGui::GetCursorPosX() +
+                (ImGui::GetContentRegionAvail().x - titleSize.x) / 2.f
+            );
+
+            ImGui::SetCursorPosY(
+                ImGui::GetCursorPosY() +
+                (headerHeight - titleSize.y) / 2.f
+            );
+
+            ImGui::TextUnformatted("Function");
+
+            ImGui::EndTable();
+        }
+
+        ImGui::PopStyleVar(2);
+
+        bool addNewRow{false};
+
+        constexpr ImGuiTableFlags tableFlags{
+            ImGuiTableFlags_BordersOuter |
+            ImGuiTableFlags_BordersInnerH |
+            ImGuiTableFlags_NoSavedSettings
+        };
+
+        ImGui::PushStyleVar(
+            ImGuiStyleVar_CellPadding,
+            {0.f, 0.f}
+        );
+
+        if (ImGui::BeginTable("FunctionTable", 3, tableFlags)) {
+            ImGui::TableSetupColumn(
+                "Number",
+                ImGuiTableColumnFlags_WidthFixed,
+                numberColumnWidth
+            );
+
+            ImGui::TableSetupColumn(
+                "Color",
+                ImGuiTableColumnFlags_WidthFixed,
+                30.f
+            );
+
+            ImGui::TableSetupColumn(
+                "Expression",
+                ImGuiTableColumnFlags_WidthStretch
+            );
+
+            constexpr ImVec4 transparent{0.f, 0.f, 0.f, 0.f};
+
+            ImGui::PushStyleColor(ImGuiCol_FrameBg, transparent);
+            ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, transparent);
+            ImGui::PushStyleColor(ImGuiCol_FrameBgActive, transparent);
+
+            ImGui::PushStyleVar(
+                ImGuiStyleVar_FrameBorderSize,
+                0.f
+            );
+
+            constexpr float rowHeight{30.f};
+            const ImVec2 tableStart{
+                ImGui::GetCursorScreenPos()
+            };
+
+            for (std::size_t i{0}; i < m_functionRows.size(); ++i) {
+                ImGui::PushID(static_cast<int>(i));
+
+                ImGui::TableNextRow(
+                    ImGuiTableRowFlags_None,
+                    rowHeight
+                );
+
+                ImGui::TableSetColumnIndex(0);
+                const std::string number{
+                    std::to_string(i + 1)
+                };
+
+                const ImVec2 numberSize{
+                    ImGui::CalcTextSize(number.c_str())
+                };
+
+                ImGui::SetCursorPosX(
+                    ImGui::GetCursorPosX() +
+                    (ImGui::GetContentRegionAvail().x - numberSize.x) / 2.f
+                );
+
+                ImGui::SetCursorPosY(
+                    ImGui::GetCursorPosY() +
+                    (rowHeight - numberSize.y) / 2.f
+                );
+
+                ImGui::TextUnformatted(number.c_str());
+
+                ImGui::TableSetColumnIndex(1);
+
+                if (!m_functionRows[i].expression.empty()) {
+
+                    constexpr float colorSize{16.f};
+
+                    const float horizontalOffset{
+                        (ImGui::GetContentRegionAvail().x - colorSize) / 2.f
+                    };
+
+                    ImGui::SetCursorPosX(
+                        ImGui::GetCursorPosX() + horizontalOffset
+                    );
+
+                    ImGui::SetCursorPosY(
+                        ImGui::GetCursorPosY() +
+                        (rowHeight - colorSize) / 2.f
+                    );
+
+                    ImGui::PushStyleVar(
+                        ImGuiStyleVar_FrameBorderSize,
+                        1.f
+                    );
+
+                    ImGui::PushStyleColor(
+                        ImGuiCol_Border,
+                        ImVec4(0.f, 0.f, 0.f, 1.f)
+                    );
+
+                    if (
+                        ImGui::ColorButton(
+                            "##FunctionColor",
+                            m_functionRows[i].color,
+                            ImGuiColorEditFlags_NoTooltip,
+                            {colorSize, colorSize}
+                        )
+                    ) {
+                        ImGui::OpenPopup("FunctionColorPicker");
+                    }
+
+                    const ImVec2 colorButtonMax{ImGui::GetItemRectMax()};
+                    const ImVec2 colorButtonMin{ImGui::GetItemRectMin()};
+
+                    ImGui::SetNextWindowPos(
+                        {
+                            colorButtonMax.x + 5.f,
+                            colorButtonMin.y
+                        },
+                        ImGuiCond_Appearing
+                    );
+
+                    if (
+                        ImGui::BeginPopup(
+                            "FunctionColorPicker",
+                            ImGuiWindowFlags_NoMove
+                        )
+                    ) {
+                        constexpr ImGuiColorEditFlags colorPickerFlags{
+                            ImGuiColorEditFlags_NoAlpha |
+                            ImGuiColorEditFlags_NoInputs |
+                            ImGuiColorEditFlags_NoSidePreview |
+                            ImGuiColorEditFlags_NoSmallPreview
+                        };
+
+                        ImGui::SetNextItemWidth(160.f);
+
+                        ImGui::ColorPicker4(
+                            "##ColorPicker",
+                            &m_functionRows[i].color.x,
+                            colorPickerFlags
+                        );
+
+                        ImGui::EndPopup();
+                    }
+
+                    ImGui::PopStyleColor();
+                    ImGui::PopStyleVar();
+                }
+
+                ImGui::TableSetColumnIndex(2);
+
+                ImGui::SetCursorPosY(
+                    ImGui::GetCursorPosY() +
+                    (rowHeight - ImGui::GetFrameHeight()) / 2.f
+                );      
+
+                ImGui::SetNextItemWidth(-1.f);
+
+                const bool submitted{
+                    ImGui::InputText(
+                        "##FunctionExpression",
+                        &m_functionRows[i].expression,
+                        ImGuiInputTextFlags_EnterReturnsTrue
+                    )
+                };
+
+                if (
+                    submitted &&
+                    !m_functionRows[i].expression.empty() &&
+                    i == m_functionRows.size() - 1
+                ) {
+                    addNewRow = true;
+                }
+
+                ImGui::PopID();
+            }
+            ImGui::PopStyleVar();
+            ImGui::PopStyleColor(3);
+
+            ImGui::EndTable();
+            const float separatorX{
+                tableStart.x + numberColumnWidth + 1.f
+            };
+
+            const float tableBottom{
+                tableStart.y +
+                rowHeight * static_cast<float>(m_functionRows.size())
+            };
+
+            ImGui::GetWindowDrawList()->AddLine(
+                {separatorX, tableStart.y},
+                {separatorX, tableBottom},
+                ImGui::GetColorU32(ImGuiCol_TableBorderStrong)
+            );
+        }
+        ImGui::PopStyleVar();
+        
+        if (
+            addNewRow &&
+            m_functionRows.size() < maxFunctions
+        ) {
+            m_functionRows.emplace_back();
+        }
+
+        ImGui::End();
+    }
+
+    void UserInterface::Draw([[maybe_unused]]sf::RenderWindow& window, Theme& theme) {
+        DrawFunctionPanel();
         SelectTheme(theme);
-        window.draw(m_title);
+        //window.draw(m_title);
     }
 
 } // namespace mathplotter
