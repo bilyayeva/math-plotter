@@ -79,7 +79,6 @@ namespace mathplotter {
     void Application::Run() {
         sf::Clock deltaClock;
 
-        m_functionRenderers.emplace_back("x^3", m_theme.GetFunctionColor());
         while (m_window.isOpen()) {
             ProcessEvents();
             ImGui::SFML::Update(m_window, deltaClock.restart());
@@ -110,13 +109,42 @@ namespace mathplotter {
             );
 
             // Render Function
-            for (auto& function: m_functionRenderers) {
-                function.Draw(m_window, bounds, m_gridRenderer.GetMajorGridStep());
+            for (auto& function : m_functionRenderers) {
+                if (function) {
+                    function->Draw(
+                        m_window,
+                        bounds,
+                        m_gridRenderer.GetMajorGridStep()
+                    );
+                }
+            }
+
+            const auto submission{
+                m_userInterface.Draw(
+                    m_window,
+                    m_theme
+                )
+            };
+
+            if (submission.has_value()) {
+                if (
+                    m_functionRenderers.size() <=
+                    submission->rowIndex
+                ) {
+                    m_functionRenderers.resize(
+                        submission->rowIndex + 1
+                    );
+                }
+
+                m_functionRenderers[submission->rowIndex] =
+                    std::make_unique<FunctionRenderer>(
+                        submission->expression,
+                        submission->color
+                    );
             }
 
             // Render User Interface
             m_window.setView(m_interfaceView);
-            m_userInterface.Draw(m_window, m_theme);
 
             ImGui::SFML::Render(m_window);
             m_window.display();

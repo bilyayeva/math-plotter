@@ -7,6 +7,9 @@
 #include <imgui.h>
 #include <misc/cpp/imgui_stdlib.h>
 
+#include <cstddef>
+#include <cstdint>
+#include <optional>
 #include <string>
 
 namespace mathplotter {
@@ -34,6 +37,15 @@ namespace mathplotter {
             color.g / 255.f,
             color.b / 255.f,
             color.a / 255.f
+        };
+    }
+
+    sf::Color UserInterface::ToSfmlColor(const ImVec4& color) {
+        return {
+            static_cast<std::uint8_t>(color.x * 255.f),
+            static_cast<std::uint8_t>(color.y * 255.f),
+            static_cast<std::uint8_t>(color.z * 255.f),
+            static_cast<std::uint8_t>(color.w * 255.f)
         };
     }
 
@@ -126,7 +138,11 @@ namespace mathplotter {
         ImGui::End();
     }
 
-    void UserInterface::DrawFunctionPanel(const Theme& theme) {
+    std::optional<FunctionSubmission> UserInterface::DrawFunctionPanel(
+        const Theme& theme
+    ) {
+        std::optional<FunctionSubmission> submission;
+
         const ImVec4 background{
             ToImGuiColor(theme.GetBackgroundColor())
         };
@@ -348,7 +364,7 @@ namespace mathplotter {
 
                 ImGui::TableSetColumnIndex(1);
 
-                if (!m_functionRows[i].expression.empty()) {
+                if (m_functionRows[i].isSubmitted) {
 
                     constexpr float colorSize{16.f};
 
@@ -407,11 +423,19 @@ namespace mathplotter {
 
                         ImGui::SetNextItemWidth(160.f);
 
-                        ImGui::ColorPicker4(
-                            "##ColorPicker",
-                            &m_functionRows[i].color.x,
-                            colorPickerFlags
-                        );
+                        if (
+                            ImGui::ColorPicker4(
+                                "##ColorPicker",
+                                &m_functionRows[i].color.x,
+                                colorPickerFlags
+                            )
+                        ) {
+                            submission = FunctionSubmission{
+                                i,
+                                m_functionRows[i].expression,
+                                ToSfmlColor(m_functionRows[i].color)
+                            };
+                        }
 
                         ImGui::EndPopup();
                     }
@@ -428,7 +452,7 @@ namespace mathplotter {
 
                 ImGui::SetNextItemWidth(-1.f);
 
-                const bool submitted{
+                const bool expressionSubmitted{
                     ImGui::InputText(
                         "##FunctionExpression",
                         &m_functionRows[i].expression,
@@ -436,12 +460,25 @@ namespace mathplotter {
                     )
                 };
 
+                if (ImGui::IsItemEdited()) {
+                    m_functionRows[i].isSubmitted = false;
+                }
+
                 if (
-                    submitted &&
-                    !m_functionRows[i].expression.empty() &&
-                    i == m_functionRows.size() - 1
+                    expressionSubmitted &&
+                    !m_functionRows[i].expression.empty()
                 ) {
-                    addNewRow = true;
+                    m_functionRows[i].isSubmitted = true;
+
+                    submission = FunctionSubmission{
+                        i,
+                        m_functionRows[i].expression,
+                        ToSfmlColor(m_functionRows[i].color)
+                    };
+
+                    if (i == m_functionRows.size() - 1) {
+                        addNewRow = true;
+                    }
                 }
 
                 ImGui::PopID();
@@ -476,12 +513,19 @@ namespace mathplotter {
 
         ImGui::End();
         ImGui::PopStyleColor(9);
+
+        return submission;
     }
 
-    void UserInterface::Draw([[maybe_unused]]sf::RenderWindow& window, Theme& theme) {
-        DrawFunctionPanel(theme);
+    std::optional<FunctionSubmission> UserInterface::Draw(
+        [[maybe_unused]]sf::RenderWindow& window,
+        Theme& theme
+    ) {
+        const auto submission{DrawFunctionPanel(theme)};
+
         SelectTheme(theme);
-        //window.draw(m_title);
+
+        return submission;
     }
 
 } // namespace mathplotter

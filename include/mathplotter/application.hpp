@@ -11,20 +11,21 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/View.hpp>
 
+#include <memory>
 #include <vector>
 
 namespace mathplotter {
 
     class Application {
     private:
-        sf::RenderWindow                m_window;
-        sf::Font                        m_font;
-        sf::View                        m_interfaceView;
-        Theme                           m_theme;
-        CameraController                m_cameraController;
-        GridRenderer                    m_gridRenderer;
-        std::vector<FunctionRenderer>   m_functionRenderers;
-        UserInterface                   m_userInterface;
+        sf::RenderWindow                                m_window;
+        sf::Font                                        m_font;
+        sf::View                                        m_interfaceView;
+        Theme                                           m_theme;
+        CameraController                                m_cameraController;
+        GridRenderer                                    m_gridRenderer;
+        std::vector<std::unique_ptr<FunctionRenderer>>  m_functionRenderers;
+        UserInterface                                   m_userInterface;
 
         void ProcessEvents();
     public:
