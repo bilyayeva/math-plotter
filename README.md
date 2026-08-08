@@ -40,8 +40,7 @@ Change function colors and get immediate feedback for invalid expressions.
 ## Architecture
 
 Math Plotter++ is split into separate components, each responsible for a
-specific part of the application. The `Application` class manages the main
-application lifecycle and connects these components together.
+specific part of the application.
 
 - `Application`: manages the application lifecycle and coordinates components.
 - `CameraController`: handles graph navigation, zooming, and the viewport.
