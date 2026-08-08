@@ -85,7 +85,7 @@ sudo apt install \
 Clone the repository:
 
 ```bash
-git clone https://github.com/<username>/math-plotter.git
+git clone https://github.com/bilyayeva/math-plotter.git
 cd math-plotter
 ```
 
